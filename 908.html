@@ -1,43 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>908</title>
   <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/nav.css" />
 </head>
+
 <body>
-  <header>
-    <a href="/NH.github.io/index.html" class="logo">Quiz App</a>
-    <nav>
+<div id="sidebar" class="sidebar">
+  <button id="sidebar-toggle">☰</button>
+  <div class="sidebar-content">
+    <a href="/NH.github.io/index.html">Home</a>
+
+    <div class="nav-section">
+      <button class="expand-btn">Oracle ▸</button>
+      <div class="submenu">
+        <button class="expand-btn">SQL ▸</button>
+        <div class="submenu">
+          <a href="/NH.github.io/908.html" onclick="loadQuiz('1Z0_908.json', '1Z0_908')">908</a>
+          <a href="quiz2.html">Quiz 2</a>
+        </div>
+      </div>
+    </div>
+
     <label class="switch">
       <input type="checkbox" id="theme-toggle" />
       <span class="slider"></span>
     </label>
-      <a href="/NH.github.io/index.html">Home</a>
-      <a href="quiz2.html">Quiz 2</a>
-    </nav>
-  </header>
+  </div>
+</div>
+
+
   <main>
     <div id="score" style="margin-top: 10px;">Score: 0 / 0</div>
+    <div id="review-buttons" style="display: flex; gap: 10px;">
+      <button id="btn-wrong">Wrong (0)</button>
+    </div>
+
     <h1 id="quiz-title">Loading Quiz 1...</h1>
     <div id="quiz-container"></div>
     <div class="quiz-controls">
       <button id="prev-btn" onclick="prevQuestion()">Previous</button>
       <button id="next-btn" onclick="nextQuestion()">Next</button>
       <button onclick="resetQuiz()">Reset</button>
-       <button id="submit-btn" onclick="submitCurrentAnswer()">Submit</button>
+      <button id="submit-btn" onclick="submitCurrentAnswer()">Submit</button>
     </div>
+    <hr id="quiz-divider" style="display:none;">
+    <div id="wrong-answers" style="margin-top: 40px;"></div>
+
   </main>
   <script src="js/main.js"></script>
-<script>
-  window.onload = () => {
-    loadQuiz('data/1Z0_908.json', '1Z0_908');
-  };
+  <script src="js/nav.js"></script>
+  <script>
+    window.onload = () => {
+      loadQuiz('data/1Z0_908.json', '1Z0_908');
+    };
     document.getElementById('theme-toggle').addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode');
-  });
-</script>
-
+      document.body.classList.toggle('dark-mode');
+    });
+  </script>
 </body>
+
 </html>

@@ -1,25 +1,9 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-}
-
-header {
-  background-color: #f8f8f8;
-  padding: 10px 20px;
-  border-bottom: 1px solid #ddd;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-header nav a {
-  margin-left: 15px;
-  text-decoration: none;
-  color: #333;
-  font-weight: bold;
+  background-color: white;
+  color: black;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 main {
@@ -47,7 +31,6 @@ label {
   border-radius: 4px;
 }
 
-/* Ensure correct/wrong colors override dark-mode background */
 .correct {
   background-color: #4caf50 !important; /* brighter green */
   color: white !important;
@@ -58,14 +41,15 @@ label {
   color: white !important;
 }
 
-
 #score {
   font-weight: bold;
   padding: 10px 20px;
   background: #e6f7ff;
   border-bottom: 1px solid #ddd;
   box-shadow: 0 2px 3px rgba(0,0,0,0.05);
+  transition: background-color 0.3s, color 0.3s;
 }
+
 #quiz-container label {
   display: block;
   margin: 8px 0;
@@ -96,20 +80,42 @@ label {
   color: #444;
 }
 
-/* Default light theme */
-body {
-  background-color: white;
-  color: black;
-  transition: background-color 0.3s, color 0.3s;
-}
-
 /* Dark theme */
 body.dark-mode {
   background-color: #121212;  /* dark background */
   color: white;
 }
 
-/* If you have specific elements that need color changes, style them too */
+/* Dark mode overrides for quiz container labels (except correct/wrong) */
+body.dark-mode #quiz-container label:not(.correct):not(.wrong) {
+  background-color: #fefefe !important;
+  color: black !important;
+}
+
+/* Dark mode score styling */
+body.dark-mode #score {
+  background-color: #003366;
+  color: #ffffff;
+}
+
+/* Light mode wrong question card */
+#wrong-answers .question {
+  background-color: #fefefe;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+  padding: 15px;
+}
+
+/* Dark mode wrong question card */
+body.dark-mode #wrong-answers .question {
+  background-color: #444444;
+  border-color: #666666;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
+  color: #eee;
+}
+
 /* Toggle switch styling */
 .switch {
   position: relative;
@@ -130,7 +136,7 @@ body.dark-mode {
   position: absolute;
   cursor: pointer;
   top: 0; left: 0; right: 0; bottom: 0;
-  background-color: white; /* default background */
+  background-color: white;
   border: 1px solid #ccc;
   transition: 0.3s;
   border-radius: 20px;
@@ -149,7 +155,7 @@ body.dark-mode {
 }
 
 input:checked + .slider {
-  background-color: black;  /* background when toggled */
+  background-color: black;
 }
 
 input:checked + .slider:before {
@@ -157,23 +163,12 @@ input:checked + .slider:before {
   background-color: white;
 }
 
-/* Background color changes when toggled */
-body.dark-background {
-  background-color: black !important;
+hr {
+  border: none;
+  border-top: 1px solid #050505;
+  margin: 30px 0;
 }
 
-/* Keep text color unchanged */
-body.dark-mode {
-  background-color: #121212;
-  color: white; /* keep page text white */
-}
-
-body.dark-mode #quiz-container label:not(.correct):not(.wrong) {
-  background-color: #fefefe !important;
-  color: black !important;
-}
-/* Score styling for dark mode */
-body.dark-mode #score {
-  background-color: #003366;
-  color: #ffffff;
+#wrong-answers, #unanswered-answers {
+  display: none;
 }

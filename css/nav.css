@@ -1,0 +1,96 @@
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 60px;
+  height: 100vh;
+  background: #222;
+  color: white;
+  overflow-x: hidden;
+  transition: width 0.3s ease;
+  z-index: 1000;
+}
+
+.sidebar.expanded {
+  width: 200px;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  padding: 1px;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 5px;
+  display: block;
+}
+
+#sidebar-toggle {
+  background: none;
+  color: white;
+  border: none;
+  font-size: 24px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+main {
+  margin-left: 60px;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+.sidebar.expanded ~ main {
+  margin-left: 200px;
+}
+
+/* Nav blocks and nested sections */
+.nav-section {
+  margin: 5px 0;
+  background-color: #2a2a2a;
+  padding: 5px 0;
+  border-left: 4px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.nav-section.open {
+  border-left-color: #00bcd4;
+}
+
+.expand-btn {
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  color: white;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.expand-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.submenu {
+  display: none;
+  flex-direction: column;
+  padding-left: 15px;
+  transition: max-height 0.3s ease;
+}
+
+.submenu a {
+  padding: 6px 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+  background-color: transparent;
+  transition: background-color 0.2s;
+}
+
+.submenu a:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}

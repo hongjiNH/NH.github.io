@@ -1,7 +1,7 @@
 let currentQuiz = [];
 let userAnswers = {};
 let currentQuestionIndex = 0;
-let submitted = {};  // Track submitted questions
+let submitted = {};  // Track submitted questions (by index)
 
 function loadQuiz(file, title) {
   fetch(file)
@@ -58,10 +58,11 @@ function renderQuiz() {
 
     // Show green/red backgrounds only if submitted
     if (submitted[currentQuestionIndex]) {
-      if (q.answer.includes(i) && userAnswers[currentQuestionIndex].includes(i)) {
-            label.classList.add("correct");
-            } else if (userAnswers[currentQuestionIndex].includes(i)) {
-            label.classList.add("wrong");
+        if (q.answer.includes(i)) {
+            label.classList.add("correct"); // Highlight all correct options
+        }
+        if (!q.answer.includes(i) && userAnswers[currentQuestionIndex].includes(i)) {
+            label.classList.add("wrong"); // Highlight wrong selections
         }
     }
 
@@ -77,13 +78,13 @@ function renderQuiz() {
 
     if (scoreForQuestion === 1) {
       feedback.textContent = "Correct!";
-      feedback.style.color = "green";
+      feedback.style.color = "#006400";  // darker green
     } else if (scoreForQuestion > 0) {
       feedback.textContent = "Not quite correct.";
       feedback.style.color = "orange";
     } else {
       feedback.textContent = "Wrong.";
-      feedback.style.color = "red";
+      feedback.style.color = "#8B0000";  // darker red
     }
     container.appendChild(feedback);
 
@@ -95,6 +96,7 @@ function renderQuiz() {
 
   updateScore();
   updateNavigationButtons();
+  updateReviewButtons();
 }
 
 function handleCheckboxChange(questionIdx, optionIdx, checked) {
@@ -107,8 +109,7 @@ function handleCheckboxChange(questionIdx, optionIdx, checked) {
   } else {
     userAnswers[questionIdx] = userAnswers[questionIdx].filter(i => i !== optionIdx);
   }
-
-  // Don't call renderQuiz() here, wait for submit
+  // Wait for submit button to actually mark submitted
 }
 
 function submitCurrentAnswer() {
@@ -118,6 +119,8 @@ function submitCurrentAnswer() {
   }
   submitted[currentQuestionIndex] = true;
   renderQuiz();
+  updateReviewButtons();
+
 }
 
 function calculatePartialScore(selected, correct) {
@@ -168,4 +171,124 @@ function resetQuiz() {
   submitted = {};
   currentQuestionIndex = 0;
   renderQuiz();
+
+  // Clear and hide wrong answers container
+  const wrongContainer = document.getElementById("wrong-answers");
+  if (wrongContainer) {
+    wrongContainer.innerHTML = "";
+    wrongContainer.style.display = "none"; // ✅ hide the container on reset
+  }
+
+  // Also hide the divider if used
+  const divider = document.getElementById("quiz-divider");
+  if (divider) {
+    divider.style.display = "none";
+  }
+
+  // Reset wrong button
+  const btnWrong = document.getElementById("btn-wrong");
+  if (btnWrong) {
+    btnWrong.textContent = "Wrong (0)";
+    btnWrong.dataset.wrongIndices = "[]";
+    btnWrong.disabled = true;
+  }
+
+  // Reset wrong details view
+    const wrongBtn = document.getElementById("btn-wrong");
+    if (wrongBtn) {
+    wrongBtn.dataset.wrongIndices = "[]";
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
 }
+
+function updateReviewButtons() {
+  let wrongCount = 0;
+  let wrongIndices = [];
+
+  currentQuiz.forEach((q, idx) => {
+    const userAns = userAnswers[idx] || [];
+    const isSubmitted = !!submitted[idx];
+    const score = calculatePartialScore(userAns, q.answer);
+
+    if (isSubmitted && score < 1) {
+      wrongCount++;
+      wrongIndices.push(idx);
+    }
+  });
+
+  const btnWrong = document.getElementById("btn-wrong");
+  btnWrong.textContent = `Wrong (${wrongCount})`;
+  btnWrong.dataset.wrongIndices = JSON.stringify(wrongIndices);
+  btnWrong.disabled = wrongCount === 0;
+
+}
+
+
+// Navigate to question index (for buttons)
+function goToQuestion(idx) {
+  if (idx >= 0 && idx < currentQuiz.length) {
+    currentQuestionIndex = idx;
+    renderQuiz();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}
+
+// Show wrong questions details below quiz container
+function showWrongDetails() {
+  const wrongContainer = document.getElementById("wrong-answers");
+  const divider = document.getElementById("quiz-divider");
+
+  wrongContainer.innerHTML = ""; // Clear previous content
+  wrongContainer.style.display = "block";
+  if (divider) divider.style.display = "block";
+
+  const wrongIndices = JSON.parse(document.getElementById("btn-wrong").dataset.wrongIndices || "[]");
+  if (wrongIndices.length === 0) {
+    wrongContainer.innerHTML = "<p>✅ No wrong answers. Good job!</p>";
+    return;
+  }
+
+  wrongIndices.forEach(idx => {
+    const q = currentQuiz[idx];
+    const userAns = userAnswers[idx] || [];
+
+    const div = document.createElement("div");
+    div.className = "question";
+    div.style.marginBottom = "20px";
+
+    div.innerHTML = `
+      <p><strong>Question ${idx + 1}:</strong> ${q.question}</p>
+      <ul style="padding-left: 20px;">
+        ${q.options.map((choice, i) => {
+          const selected = userAns.includes(i);
+          const correct = q.answer.includes(i);
+          const bgColor = correct ? "#28a745" : (selected ? "#dc3545" : "#f1f1f1");
+
+          return `<li style="
+              background-color: ${bgColor};
+              margin: 4px 0;
+              padding: 6px 10px;
+              border-radius: 4px;
+              list-style-type: none;
+            ">
+            ${selected ? "✅ " : ""}${choice}
+          </li>`;
+        }).join("")}
+      </ul>
+      ${q.explanation ? `<div class="explanation"><strong>Explanation:</strong> ${q.explanation}</div>` : ""}
+      <hr>
+    `;
+
+    wrongContainer.appendChild(div);
+  });
+
+  wrongContainer.scrollIntoView({ behavior: "smooth" });
+}
+
+
+// Attach button click handlers only once, after DOM ready
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("btn-wrong").addEventListener("click", showWrongDetails);
+});
+
