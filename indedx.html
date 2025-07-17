@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JSON Quiz App</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">Quiz App</div>
+    <nav>
+      <a href="#" onclick="loadQuiz('1Z0_908.json', '1Z0_908')">908</a>
+      <!-- You will not be able to see this text. -->
+      <a href="#" onclick="loadQuiz('quiz2.json', 'Quiz 2')">Quiz 2</a>
+      <a href="#" onclick="resetQuiz()">Reset</a>
+    </nav>
+  </header>
+  <main>
+    <h1 id="quiz-title">Welcome to the Quiz</h1>
+    <div id="quiz-container"></div>
+    <div id="score">Score: 0 / 0</div>
+    <button onclick="shuffleQuestions()">Shuffle Questions</button>
+  </main>
+  <script src="js/main.js"></script>
+</body>
+</html>
