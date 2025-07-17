@@ -1,14 +1,17 @@
 let currentQuiz = [];
 let userAnswers = {};
+let currentIndex = 0; // track current question index
 
 function loadQuiz(file, title) {
- fetch('/NH.github.io/data/quiz1.json')
+  fetch(file)
     .then((res) => res.json())
     .then((data) => {
       currentQuiz = data;
       userAnswers = {};
+      currentIndex = 0;
       document.getElementById("quiz-title").textContent = title;
       renderQuiz();
+      updateNavButtons();
     })
     .catch((err) => {
       alert("Failed to load quiz. Check console for details.");
@@ -20,50 +23,56 @@ function renderQuiz() {
   const container = document.getElementById("quiz-container");
   container.innerHTML = "";
 
-  currentQuiz.forEach((q, idx) => {
-    const div = document.createElement("div");
-    div.className = "question";
+  if (currentQuiz.length === 0) {
+    container.textContent = "No questions loaded.";
+    return;
+  }
 
-    const questionText = document.createElement("p");
-    questionText.textContent = `${idx + 1}. ${q.question}`;
-    div.appendChild(questionText);
+  const q = currentQuiz[currentIndex];
 
-    q.options.forEach((opt, i) => {
-      const label = document.createElement("label");
-      label.innerHTML = `<input type="radio" name="q${idx}" value="${i}"> ${opt}`;
-      label.querySelector("input").addEventListener("change", () =>
-        checkAnswer(idx, i)
-      );
-      div.appendChild(label);
-      div.appendChild(document.createElement("br"));
-    });
+  const div = document.createElement("div");
+  div.className = "question";
 
-    const expl = document.createElement("p");
-    expl.id = `explanation-${idx}`;
-    expl.style.display = "none";
-    expl.textContent = q.explanation;
-    div.appendChild(expl);
+  const questionText = document.createElement("p");
+  questionText.textContent = `${currentIndex + 1}. ${q.question}`;
+  div.appendChild(questionText);
 
-    container.appendChild(div);
+  q.options.forEach((opt, i) => {
+    const label = document.createElement("label");
+    label.innerHTML = `<input type="radio" name="q${currentIndex}" value="${i}"> ${opt}`;
+    const input = label.querySelector("input");
+
+    // Restore selection if exists
+    if (userAnswers[currentIndex] === i) input.checked = true;
+
+    // Disable if already answered
+    if (userAnswers.hasOwnProperty(currentIndex)) {
+      input.disabled = true;
+      label.classList.remove("correct", "wrong");
+      if (i === q.answer) label.classList.add("correct");
+      else if (i === userAnswers[currentIndex]) label.classList.add("wrong");
+    }
+
+    input.addEventListener("change", () => checkAnswer(currentIndex, i));
+    div.appendChild(label);
+    div.appendChild(document.createElement("br"));
   });
 
+  const expl = document.createElement("p");
+  expl.id = `explanation-${currentIndex}`;
+  expl.style.display = userAnswers.hasOwnProperty(currentIndex) ? "block" : "none";
+  expl.textContent = q.explanation;
+  div.appendChild(expl);
+
+  container.appendChild(div);
+
   updateScore();
+  updateNavButtons();
 }
 
 function checkAnswer(idx, selected) {
-  const q = currentQuiz[idx];
   userAnswers[idx] = selected;
-
-  const inputs = document.getElementsByName(`q${idx}`);
-  inputs.forEach((r, i) => {
-    r.disabled = true;
-    r.parentElement.classList.remove("correct", "wrong");
-    if (i === q.answer) r.parentElement.classList.add("correct");
-    else if (i === selected) r.parentElement.classList.add("wrong");
-  });
-
-  document.getElementById(`explanation-${idx}`).style.display = "block";
-  updateScore();
+  renderQuiz(); // re-render question to update styles and disable inputs
 }
 
 function updateScore() {
@@ -76,10 +85,33 @@ function updateScore() {
 function shuffleQuestions() {
   currentQuiz.sort(() => Math.random() - 0.5);
   userAnswers = {};
+  currentIndex = 0;
   renderQuiz();
+  updateNavButtons();
 }
 
 function resetQuiz() {
   userAnswers = {};
+  currentIndex = 0;
   renderQuiz();
+  updateNavButtons();
+}
+
+function nextQuestion() {
+  if (currentIndex < currentQuiz.length - 1) {
+    currentIndex++;
+    renderQuiz();
+  }
+}
+
+function prevQuestion() {
+  if (currentIndex > 0) {
+    currentIndex--;
+    renderQuiz();
+  }
+}
+
+function updateNavButtons() {
+  document.getElementById("prev-btn").disabled = currentIndex === 0;
+  document.getElementById("next-btn").disabled = currentIndex === currentQuiz.length - 1;
 }

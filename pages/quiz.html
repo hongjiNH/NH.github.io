@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz 1</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <header>
+    <a href="index.html" class="logo">Quiz App</a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="quiz2.html">Quiz 2</a>
+    </nav>
+  </header>
+  <main>
+    <h1 id="quiz-title">Loading Quiz 1...</h1>
+    <div id="quiz-container"></div>
+    <div id="score">Score: 0 / 0</div>
+    <div class="quiz-controls">
+      <button id="prev-btn" onclick="prevQuestion()">Previous</button>
+      <button id="next-btn" onclick="nextQuestion()">Next</button>
+      <button onclick="shuffleQuestions()">Shuffle Questions</button>
+      <button onclick="resetQuiz()">Reset</button>
+    </div>
+  </main>
+  <script src="/NH.github.io/js/main.js"></script>
+  <script>
+    // Load Quiz 1 JSON on page load
+    window.onload = () => {
+      loadQuiz('1Z0_908.json', '1Z0_908');
+    };
+  </script>
+</body>
+</html>
