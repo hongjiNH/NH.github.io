@@ -2,7 +2,7 @@ let currentQuiz = [];
 let userAnswers = {};
 
 function loadQuiz(file, title) {
-  fetch(`data/${file}`)
+ fetch('/NH.github.io/data/quiz1.json')
     .then((res) => res.json())
     .then((data) => {
       currentQuiz = data;
