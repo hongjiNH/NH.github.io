@@ -10,19 +10,23 @@
   <header>
     <a href="/NH.github.io/index.html" class="logo">Quiz App</a>
     <nav>
+    <label class="switch">
+      <input type="checkbox" id="theme-toggle" />
+      <span class="slider"></span>
+    </label>
       <a href="/NH.github.io/index.html">Home</a>
       <a href="quiz2.html">Quiz 2</a>
     </nav>
   </header>
   <main>
+    <div id="score" style="margin-top: 10px;">Score: 0 / 0</div>
     <h1 id="quiz-title">Loading Quiz 1...</h1>
     <div id="quiz-container"></div>
-    <div id="score">Score: 0 / 0</div>
     <div class="quiz-controls">
       <button id="prev-btn" onclick="prevQuestion()">Previous</button>
       <button id="next-btn" onclick="nextQuestion()">Next</button>
-      <button onclick="shuffleQuestions()">Shuffle Questions</button>
       <button onclick="resetQuiz()">Reset</button>
+       <button id="submit-btn" onclick="submitCurrentAnswer()">Submit</button>
     </div>
   </main>
   <script src="js/main.js"></script>
@@ -30,6 +34,10 @@
   window.onload = () => {
     loadQuiz('data/1Z0_908.json', '1Z0_908');
   };
+  document.getElementById("theme-toggle").addEventListener("change", function () {
+  document.body.classList.toggle("dark-mode", this.checked);
+  });
 </script>
+
 </body>
 </html>
