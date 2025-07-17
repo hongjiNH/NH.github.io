@@ -41,3 +41,14 @@ main {
 button {
   margin-top: 20px;
 }
+
+.quiz-controls {
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+}
+.quiz-controls button {
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
