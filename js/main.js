@@ -1,6 +1,6 @@
 let currentQuiz = [];
 let userAnswers = {};
-let currentIndex = 0; // track current question index
+let currentQuestionIndex = 0;
 
 function loadQuiz(file, title) {
   fetch(file)
@@ -8,10 +8,9 @@ function loadQuiz(file, title) {
     .then((data) => {
       currentQuiz = data;
       userAnswers = {};
-      currentIndex = 0;
+      currentQuestionIndex = 0;
       document.getElementById("quiz-title").textContent = title;
       renderQuiz();
-      updateNavButtons();
     })
     .catch((err) => {
       alert("Failed to load quiz. Check console for details.");
@@ -24,55 +23,61 @@ function renderQuiz() {
   container.innerHTML = "";
 
   if (currentQuiz.length === 0) {
-    container.textContent = "No questions loaded.";
+    container.textContent = "No questions available.";
     return;
   }
 
-  const q = currentQuiz[currentIndex];
+  const q = currentQuiz[currentQuestionIndex];
 
   const div = document.createElement("div");
   div.className = "question";
 
   const questionText = document.createElement("p");
-  questionText.textContent = `${currentIndex + 1}. ${q.question}`;
+  questionText.textContent = `${currentQuestionIndex + 1}. ${q.question}`;
   div.appendChild(questionText);
 
   q.options.forEach((opt, i) => {
     const label = document.createElement("label");
-    label.innerHTML = `<input type="radio" name="q${currentIndex}" value="${i}"> ${opt}`;
+    label.innerHTML = `<input type="radio" name="q${currentQuestionIndex}" value="${i}"> ${opt}`;
+    
     const input = label.querySelector("input");
+    input.addEventListener("change", () => checkAnswer(currentQuestionIndex, i));
 
-    // Restore selection if exists
-    if (userAnswers[currentIndex] === i) input.checked = true;
-
-    // Disable if already answered
-    if (userAnswers.hasOwnProperty(currentIndex)) {
+    // If user already answered, mark it checked and disable options
+    if (userAnswers[currentQuestionIndex] !== undefined) {
+      input.checked = userAnswers[currentQuestionIndex] === i;
       input.disabled = true;
-      label.classList.remove("correct", "wrong");
-      if (i === q.answer) label.classList.add("correct");
-      else if (i === userAnswers[currentIndex]) label.classList.add("wrong");
     }
 
-    input.addEventListener("change", () => checkAnswer(currentIndex, i));
+    // Highlight correct/wrong answers after selection
+    label.classList.remove("correct", "wrong");
+    if (userAnswers[currentQuestionIndex] !== undefined) {
+      if (i === q.answer) label.classList.add("correct");
+      else if (i === userAnswers[currentQuestionIndex]) label.classList.add("wrong");
+    }
+
     div.appendChild(label);
     div.appendChild(document.createElement("br"));
   });
 
+  // Explanation
   const expl = document.createElement("p");
-  expl.id = `explanation-${currentIndex}`;
-  expl.style.display = userAnswers.hasOwnProperty(currentIndex) ? "block" : "none";
+  expl.id = `explanation-${currentQuestionIndex}`;
+  expl.style.display = userAnswers[currentQuestionIndex] !== undefined ? "block" : "none";
   expl.textContent = q.explanation;
   div.appendChild(expl);
 
   container.appendChild(div);
 
+  // Update score and navigation buttons
   updateScore();
-  updateNavButtons();
+  updateNavigationButtons();
 }
 
 function checkAnswer(idx, selected) {
+  const q = currentQuiz[idx];
   userAnswers[idx] = selected;
-  renderQuiz(); // re-render question to update styles and disable inputs
+  renderQuiz(); // Re-render to update UI with answer feedback
 }
 
 function updateScore() {
@@ -85,33 +90,54 @@ function updateScore() {
 function shuffleQuestions() {
   currentQuiz.sort(() => Math.random() - 0.5);
   userAnswers = {};
-  currentIndex = 0;
+  currentQuestionIndex = 0;
   renderQuiz();
-  updateNavButtons();
 }
 
 function resetQuiz() {
   userAnswers = {};
-  currentIndex = 0;
+  currentQuestionIndex = 0;
   renderQuiz();
-  updateNavButtons();
 }
 
 function nextQuestion() {
-  if (currentIndex < currentQuiz.length - 1) {
-    currentIndex++;
+  if (currentQuestionIndex < currentQuiz.length - 1) {
+    currentQuestionIndex++;
     renderQuiz();
   }
 }
 
 function prevQuestion() {
-  if (currentIndex > 0) {
-    currentIndex--;
+  if (currentQuestionIndex > 0) {
+    currentQuestionIndex--;
     renderQuiz();
   }
 }
 
-function updateNavButtons() {
-  document.getElementById("prev-btn").disabled = currentIndex === 0;
-  document.getElementById("next-btn").disabled = currentIndex === currentQuiz.length - 1;
+function updateNavigationButtons() {
+  document.getElementById("prev-btn").disabled = currentQuestionIndex === 0;
+  document.getElementById("next-btn").disabled = currentQuestionIndex === currentQuiz.length - 1;
+}
+
+
+function saveAnswers() {
+  localStorage.setItem('userAnswers', JSON.stringify(userAnswers));
+}
+
+function loadAnswers() {
+  const saved = localStorage.getItem('userAnswers');
+  if (saved) {
+    userAnswers = JSON.parse(saved);
+  } else {
+    userAnswers = {};
+  }
+}
+
+// Then, call loadAnswers() after loading the quiz data and before renderQuiz()
+// And call saveAnswers() each time user selects an answer, e.g. in checkAnswer():
+function checkAnswer(idx, selected) {
+  const q = currentQuiz[idx];
+  userAnswers[idx] = selected;
+  saveAnswers();
+  renderQuiz();
 }
