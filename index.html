@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/dark_mode.css" />
   <link rel="stylesheet" href="css/quiz_controls.css" />
   <link rel="stylesheet" href="css/toggle_menu.css" />
-  <link rel="stylesheet" href="css/footer.css" />
+    <link rel="stylesheet" href="css/footer.css" />
   <link rel="stylesheet" href="css/nav.css" />
 
   <script>
@@ -75,11 +75,6 @@
     document.getElementById('theme-toggle').addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
     });
-    fetch('/constant/footer.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('footer-container').innerHTML = html;
-      });
   </script>
 </body>
 
