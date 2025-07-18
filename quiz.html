@@ -4,10 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>908</title>
+  <title>Quiz</title>
 
-  <!-- Stylesheets with temporary placeholder, fixed via script -->
-  <!-- <link rel="stylesheet" href="css/styles.css" /> -->
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/dark_mode.css" />
   <link rel="stylesheet" href="css/quiz_controls.css" />
@@ -35,18 +33,16 @@
     <button id="sidebar-toggle">☰</button>
     <div class="sidebar-content">
       <a href="index.html">Home</a>
-
       <div class="nav-section">
         <button class="expand-btn">Oracle ▸</button>
         <div class="submenu">
           <button class="expand-btn">SQL ▸</button>
           <div class="submenu">
-            <a href="908.html" onclick="loadQuiz('data/1Z0_908.json', '1Z0_908')">908</a>
-            <a href="quiz2.html">Quiz 2</a>
+            <a href="quiz.html?quiz=1Z0_908&file=data/1Z0_908.json">908</a>
+            <a href="quiz.html?quiz=Quiz2&file=data/quiz2.json">Quiz 2</a>
           </div>
         </div>
       </div>
-
       <label class="switch">
         <input type="checkbox" id="theme-toggle" />
         <span class="slider"></span>
@@ -60,7 +56,7 @@
       <button id="btn-wrong">Wrong (0)</button>
     </div>
 
-    <h1 id="quiz-title">Loading Quiz 1...</h1>
+    <h1 id="quiz-title">Loading Quiz...</h1>
     <div id="quiz-container"></div>
     <div class="quiz-controls">
       <button id="prev-btn" onclick="prevQuestion()">Previous</button>
@@ -71,53 +67,66 @@
 
     <hr id="quiz-divider" style="display: none;">
 
-    <!-- Explanation controls ABOVE wrong answers -->
     <div id="explanation-controls" style="display: none; gap: 10px; margin-bottom: 10px;">
       <button id="expand-all">Expand All Explanations</button>
       <button id="collapse-all">Collapse All Explanations</button>
     </div>
 
-    <!-- Single wrong answers container -->
     <div id="wrong-answers" style="margin-top: 40px;"></div>
   </main>
-  <div id="footer-container">
-    <script>
-      fetch('/constant/footer.html')
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById('footer-container').innerHTML = html;
-        });
-    </script>
-  </div>
 
-  <!-- Scripts with auto-fix via JS -->
+  <div id="footer-container"></div>
+
+  <script>
+    // Load footer dynamically
+    fetch('/constant/footer.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('footer-container').innerHTML = html;
+      });
+
+    // Get query parameters
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
+
+    // Load quiz based on URL query
+    window.onload = () => {
+      const file = getQueryParam('file');
+      const quizId = getQueryParam('quiz');
+
+      if (file && quizId) {
+        document.title = `Quiz - ${quizId}`;
+        document.getElementById('quiz-title').textContent = `Quiz: ${quizId}`;
+        loadQuiz(file, quizId);
+      } else {
+        document.getElementById('quiz-title').textContent = "No quiz specified in URL.";
+      }
+
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+      });
+
+      document.getElementById("expand-all").addEventListener("click", () => {
+        document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "block");
+        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent = "Hide Explanation");
+      });
+
+      document.getElementById("collapse-all").addEventListener("click", () => {
+        document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "none");
+        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent = "Show Explanation");
+      });
+    };
+  </script>
+
+  <!-- JS scripts -->
   <script src="js/quiz/quiz_data.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/quiz/quiz_render.js"></script>
   <script src="js/quiz/quiz_events.js"></script>
   <script src="js/quiz/wrong_answers.js"></script>
   <script src="js/nav.js"></script>
-  <script>
-    window.onload = () => {
-      loadQuiz('data/1Z0_908.json', '1Z0_908');
-    };
-
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-    });
-
-    document.getElementById("expand-all").addEventListener("click", () => {
-      document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "block");
-      document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
-        "Hide Explanation");
-    });
-
-    document.getElementById("collapse-all").addEventListener("click", () => {
-      document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "none");
-      document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
-        "Show Explanation");
-    });
-  </script>
 </body>
 
 </html>
