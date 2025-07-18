@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>908</title>
 
-  <!-- Stylesheets with temporary placeholder, fixed via script -->
-  <!-- <link rel="stylesheet" href="css/styles.css" /> -->
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/dark_mode.css" />
   <link rel="stylesheet" href="css/quiz_controls.css" />
@@ -17,14 +16,43 @@
 
   <script>
     // Auto-adjust relative paths for CSS/JS/IMG based on current path depth
-    const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
     window.addEventListener('DOMContentLoaded', () => {
+      const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
+
+      // Fix relative links for CSS, JS, and IMG
       document.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').forEach(el => {
         const attr = el.tagName === 'LINK' ? 'href' : 'src';
         const val = el.getAttribute(attr);
         if (val && (val.startsWith('css/') || val.startsWith('js/') || val.startsWith('images/'))) {
           el.setAttribute(attr, `${basePath}/${val}`);
         }
+      });
+
+      // Load footer HTML into footer container
+      fetch(`${basePath}/constant/footer.html`)
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('footer-container').innerHTML = html;
+        });
+
+      // Initialize quiz
+      loadQuiz('data/1Z0_908.json', '1Z0_908');
+
+      // Theme toggle listener
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+      });
+
+      // Expand all explanations
+      document.getElementById("expand-all").addEventListener("click", () => {
+        document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "block");
+        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent = "Hide Explanation");
+      });
+
+      // Collapse all explanations
+      document.getElementById("collapse-all").addEventListener("click", () => {
+        document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "none");
+        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent = "Show Explanation");
       });
     });
   </script>
@@ -57,7 +85,7 @@
   <main>
     <div id="score" style="margin-top: 10px;">Score: 0 / 0</div>
     <div id="review-buttons" style="display: flex; gap: 10px;">
-      <button id="btn-wrong">Wrong (0) </button>
+      <button id="btn-wrong">Wrong (0)</button>
     </div>
 
     <h1 id="quiz-title">Loading Quiz 1...</h1>
@@ -69,7 +97,7 @@
       <button id="submit-btn" onclick="submitCurrentAnswer()">Submit</button>
     </div>
 
-    <hr id="quiz-divider" style="display: none;">
+    <hr id="quiz-divider" style="display: none;" />
 
     <!-- Explanation controls ABOVE wrong answers -->
     <div id="explanation-controls" style="display: none; gap: 10px; margin-bottom: 10px;">
@@ -80,46 +108,17 @@
     <!-- Single wrong answers container -->
     <div id="wrong-answers" style="margin-top: 40px;"></div>
   </main>
-  <!-- Footer Container (empty placeholder) -->
+
+  <!-- Footer Container -->
   <div id="footer-container"></div>
 
-  <!-- Script loads footer after page loads -->
-  <script>
-    fetch('constant/footer.html')
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('footer-container').innerHTML = html;
-      });
-  </script>
-
-  <!-- Scripts with auto-fix via JS -->
+  <!-- Scripts -->
   <script src="js/quiz/quiz_data.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/quiz/quiz_render.js"></script>
   <script src="js/quiz/quiz_events.js"></script>
   <script src="js/quiz/wrong_answers.js"></script>
   <script src="js/nav.js"></script>
-  <script>
-    window.onload = () => {
-      loadQuiz('data/1Z0_908.json', '1Z0_908');
-    };
-
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-      document.body.classList.toggle('dark-mode');
-    });
-
-    document.getElementById("expand-all").addEventListener("click", () => {
-      document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "block");
-      document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
-        "Hide Explanation");
-    });
-
-    document.getElementById("collapse-all").addEventListener("click", () => {
-      document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "none");
-      document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
-        "Show Explanation");
-    });
-  </script>
 </body>
 
 </html>
