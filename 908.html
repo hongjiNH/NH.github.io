@@ -8,10 +8,11 @@
 
   <!-- Stylesheets with temporary placeholder, fixed via script -->
   <!-- <link rel="stylesheet" href="css/styles.css" /> -->
-   <link rel="stylesheet" href="css/base.css" />
-    <link rel="stylesheet" href="css/dark_mode.css" />
-     <link rel="stylesheet" href="css/quiz_controls.css" />
-      <link rel="stylesheet" href="css/toggle_menu.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/dark_mode.css" />
+  <link rel="stylesheet" href="css/quiz_controls.css" />
+  <link rel="stylesheet" href="css/toggle_menu.css" />
+  <link rel="stylesheet" href="css/footer.css" />
   <link rel="stylesheet" href="css/nav.css" />
 
   <script>
@@ -79,6 +80,15 @@
     <!-- Single wrong answers container -->
     <div id="wrong-answers" style="margin-top: 40px;"></div>
   </main>
+  <div id="footer-container">
+    <script>
+      fetch('/constant/footer.html')
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('footer-container').innerHTML = html;
+        });
+    </script>
+  </div>
 
   <!-- Scripts with auto-fix via JS -->
   <script src="js/quiz/quiz_data.js"></script>
