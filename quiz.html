@@ -6,26 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Quiz</title>
 
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="css/base.css" />
   <link rel="stylesheet" href="css/dark_mode.css" />
   <link rel="stylesheet" href="css/quiz_controls.css" />
   <link rel="stylesheet" href="css/toggle_menu.css" />
   <link rel="stylesheet" href="css/footer.css" />
   <link rel="stylesheet" href="css/nav.css" />
-
-  <script>
-    // Auto-adjust relative paths for CSS/JS/IMG based on current path depth
-    const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
-    window.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').forEach(el => {
-        const attr = el.tagName === 'LINK' ? 'href' : 'src';
-        const val = el.getAttribute(attr);
-        if (val && (val.startsWith('css/') || val.startsWith('js/') || val.startsWith('images/'))) {
-          el.setAttribute(attr, `${basePath}/${val}`);
-        }
-      });
-    });
-  </script>
 </head>
 
 <body>
@@ -58,6 +45,7 @@
 
     <h1 id="quiz-title">Loading Quiz...</h1>
     <div id="quiz-container"></div>
+
     <div class="quiz-controls">
       <button id="prev-btn" onclick="prevQuestion()">Previous</button>
       <button id="next-btn" onclick="nextQuestion()">Next</button>
@@ -77,21 +65,20 @@
 
   <div id="footer-container"></div>
 
+  <!-- JavaScript -->
   <script>
-    // Load footer dynamically
-    fetch('/constant/footer.html')
+    // Load footer (relative path for GitHub Pages)
+    fetch('constant/footer.html')
       .then(res => res.text())
       .then(html => {
         document.getElementById('footer-container').innerHTML = html;
       });
 
-    // Get query parameters
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
 
-    // Load quiz based on URL query
     window.onload = () => {
       const file = getQueryParam('file');
       const quizId = getQueryParam('quiz');
@@ -120,7 +107,6 @@
     };
   </script>
 
-  <!-- JS scripts -->
   <script src="js/quiz/quiz_data.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/quiz/quiz_render.js"></script>
