@@ -4,22 +4,38 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>908</title>
-  <link rel="stylesheet" href="../css/styles.css" />
-  <link rel="stylesheet" href="../css/nav.css" />
+
+  <!-- Stylesheets with temporary placeholder, fixed via script -->
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+
+  <script>
+    // Auto-adjust relative paths for CSS/JS/IMG based on current path depth
+    const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').forEach(el => {
+        const attr = el.tagName === 'LINK' ? 'href' : 'src';
+        const val = el.getAttribute(attr);
+        if (val && (val.startsWith('css/') || val.startsWith('js/') || val.startsWith('images/'))) {
+          el.setAttribute(attr, `${basePath}/${val}`);
+        }
+      });
+    });
+  </script>
 </head>
 
 <body>
   <div id="sidebar" class="sidebar">
     <button id="sidebar-toggle">☰</button>
     <div class="sidebar-content">
-      <a href="../index.html">Home</a>
+      <a href="index.html">Home</a>
 
       <div class="nav-section">
         <button class="expand-btn">Oracle ▸</button>
         <div class="submenu">
           <button class="expand-btn">SQL ▸</button>
           <div class="submenu">
-            <a href="../908.html" onclick="loadQuiz('../data/1Z0_908.json', '1Z0_908')">908</a>
+            <a href="908.html" onclick="loadQuiz('data/1Z0_908.json', '1Z0_908')">908</a>
             <a href="quiz2.html">Quiz 2</a>
           </div>
         </div>
@@ -50,11 +66,12 @@
     <div id="wrong-answers" style="margin-top: 40px;"></div>
   </main>
 
-  <script src="../js/main.js"></script>
-  <script src="../js/nav.js"></script>
+  <!-- Scripts with auto-fix via JS -->
+  <script src="js/main.js"></script>
+  <script src="js/nav.js"></script>
   <script>
     window.onload = () => {
-      loadQuiz('../data/1Z0_908.json', '1Z0_908');
+      loadQuiz('data/1Z0_908.json', '1Z0_908');
     };
 
     document.getElementById('theme-toggle').addEventListener('click', () => {

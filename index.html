@@ -5,40 +5,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JSON Quiz App</title>
-  <link rel="stylesheet" href="../css/styles.css" />
-  <link rel="stylesheet" href="../css/nav.css" />
+
+  <!-- Relative stylesheet paths (auto-fixed below) -->
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+
+  <script>
+    // Automatically correct relative asset paths
+    const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
+    window.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').forEach(el => {
+        const attr = el.tagName === 'LINK' ? 'href' : 'src';
+        const val = el.getAttribute(attr);
+        if (val && (val.startsWith('css/') || val.startsWith('js/') || val.startsWith('images/'))) {
+          el.setAttribute(attr, `${basePath}/${val}`);
+        }
+      });
+    });
+  </script>
 </head>
 
 <body>
-<div id="sidebar" class="sidebar">
-  <button id="sidebar-toggle">☰</button>
-  <div class="sidebar-content">
-    <a href="../index.html">Home</a>
+  <div id="sidebar" class="sidebar">
+    <button id="sidebar-toggle">☰</button>
+    <div class="sidebar-content">
+      <a href="index.html">Home</a>
 
-    <div class="nav-section">
-      <button class="expand-btn">Oracle ▸</button>
-      <div class="submenu">
-        <button class="expand-btn">SQL ▸</button>
+      <div class="nav-section">
+        <button class="expand-btn">Oracle ▸</button>
         <div class="submenu">
-          <a href="../908.html" onclick="loadQuiz('1Z0_908.json', '1Z0_908')">908</a>
-          <a href="quiz2.html">Quiz 2</a>
+          <button class="expand-btn">SQL ▸</button>
+          <div class="submenu">
+            <a href="908.html" onclick="loadQuiz('data/1Z0_908.json', '1Z0_908')">908</a>
+            <a href="quiz2.html">Quiz 2</a>
+          </div>
         </div>
       </div>
+
+      <label class="switch">
+        <input type="checkbox" id="theme-toggle" />
+        <span class="slider"></span>
+      </label>
     </div>
-
-    <label class="switch">
-      <input type="checkbox" id="theme-toggle" />
-      <span class="slider"></span>
-    </label>
   </div>
-</div>
-
 
   <main>
     <h1 id="quiz-title">Welcome to the Quiz</h1>
   </main>
-  <script src="../js/main.js"></script>
-  <script src="../js/nav.js"></script>
+
+  <!-- JS files (auto-fixed by script) -->
+  <script src="js/main.js"></script>
+  <script src="js/nav.js"></script>
   <script>
     document.getElementById('theme-toggle').addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
