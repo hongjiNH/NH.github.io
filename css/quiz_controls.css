@@ -43,3 +43,23 @@
   background-color: #f44336 !important; /* brighter red */
   color: white !important;
 }
+pre {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;       /* smaller padding */
+  margin: 0;              /* remove margin above and below */
+  overflow-x: auto;
+  font-family: Consolas, 'Courier New', monospace;
+  line-height: 1.2;       /* tighter line height */
+  white-space: pre-wrap;  /* wraps lines */
+  font-size: 0.9em;
+}
+code {
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: inherit;
+  line-height: inherit;
+  display: block;         /* code block fills pre */
+  margin: 0;              /* remove extra margin inside */
+  padding: 0;             /* no padding inside */
+}

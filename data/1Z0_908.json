@@ -1,4 +1,16 @@
-[
+[ 
+{
+    "question": "Your MySQL server was upgraded from an earlier major version. The sales database contains three tables, one of which is the transactions table, which has 4 million rows. You are running low on disk space on the datadir partition and begin to investigate.<br><br><pre><code>mysql&gt; show global variables like 'innodb_file%';\n+-----------------------+-------+\n| Variable_name         | Value |\n+-----------------------+-------+\n| innodb_file_per_table | ON    |\n+-----------------------+-------+\n1 row in set (0.00 sec)</code></pre><br><br><pre><code># ls -l | grep ib\n-rw------- 1 mysql mysql    3287 Dec 12 07:54 ib_buffer_pool\n-rw------- 1 mysql mysql 12582712912 Dec 12 09:50 ibdata1\n-rw------- 1 mysql mysql 50331648 Dec 12 09:50 ib_logfile0\n-rw------- 1 mysql mysql 50331648 Dec 11 14:05 ib_logfile1\n-rw------- 1 mysql mysql 12582912 Dec 12 08:05 ibtmp1\n-rw------- 1 mysql mysql 25165824 Dec 12 09:50 mysql.ibd</code></pre><br><br><pre><code># ls -l sales/\ntotal 544\n-rw------- 1 mysql mysql 47550136 Dec 12 09:50 sales.ibd\n-rw-r--r-- 1 mysql mysql   114688 Dec 11 14:33 leads.ibd</code></pre><br><br>Examine these commands and output:<br>Which two statements are true?",
+    "options": [
+      "A. Truncating the transactions table will free up the most disk space.",
+      "B. Executing SET GLOBAL innodb_row_format=COMPRESSED and then ALTER TABLE transactions will free up disk space.",
+      "C. Truncating the sales and leads tables will free up disk space.",
+      "D. Executing ALTER TABLE transactions will enable you to free up disk space.",
+      "E. The transactions table was created with innodb_file_per_table=OFF."
+    ],
+    "answer": [2, 4],
+    "explanation": "• 通过 show global variables like 'innodb_file_per_table' 输出可见，当前设置为 ON，但 transactions 表的文件大小并不在单独的 .ibd 文件中，而是存储在共享表空间（如 ibdata1）中，说明该表是在 innodb_file_per_table=OFF 模式下创建的（升级时遗留）。<br>• 共享表空间无法通过截断单表释放空间，截断 transactions 表不会释放空间。<br>• sales 和 leads 表有独立的 .ibd 文件，截断它们可以释放对应的磁盘空间。<br>• 直接执行 ALTER TABLE transactions 如果不指定操作，默认不会释放空间，且修改表格式为压缩格式需要明确执行，且可能不会显著释放空间。<br><br>附注：<br>• innodb_file_per_table=ON 表示新创建的表会有独立表空间。<br>• ibdata1 文件很大，说明旧表（如 transactions）存放在共享表空间中。<br>• sales.ibd 和 leads.ibd 文件较小，表示这两表有独立表空间。"
+  },
   {
     "question": "What is the capital of France?",
     "options": ["Paris", "Rome", "Madrid", "Berlin"],

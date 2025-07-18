@@ -1,21 +1,27 @@
 html, body {
   height: 100%;
   margin: 0;
+  /* If you want the main content to scroll above the fixed footer,
+     you can keep display flex, or remove if not needed */
   display: flex;
   flex-direction: column;
 }
 
 main {
   flex: 1 0 auto;
+  padding-bottom: 50px; /* Make room for footer height so content is not hidden */
 }
 
-/* Style the injected footer */
 footer {
-  flex-shrink: 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   background-color: #222;
   color: white;
-  padding: 15px 20px;
   text-align: center;
+  padding: 15px 20px;
+  z-index: 1000;
   box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
 }
 

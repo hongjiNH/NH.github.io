@@ -12,9 +12,11 @@ function renderQuiz() {
   const q = currentQuiz[currentQuestionIndex];
 
   // Question text
+  // Question text with line breaks
   const questionEl = document.createElement("p");
-  questionEl.textContent = `${currentQuestionIndex + 1}. ${q.question}`;
+  questionEl.innerHTML = `${currentQuestionIndex + 1}. ${q.question.replace(/\n/g, "<br>")}`;
   container.appendChild(questionEl);
+
 
   // Initialize userAnswers array for current question if not set
   if (!Array.isArray(userAnswers[currentQuestionIndex])) {
@@ -38,12 +40,12 @@ function renderQuiz() {
 
     // Show green/red backgrounds only if submitted
     if (submitted[currentQuestionIndex]) {
-        if (q.answer.includes(i)) {
-            label.classList.add("correct"); // Highlight all correct options
-        }
-        if (!q.answer.includes(i) && userAnswers[currentQuestionIndex].includes(i)) {
-            label.classList.add("wrong"); // Highlight wrong selections
-        }
+      if (q.answer.includes(i)) {
+        label.classList.add("correct"); // Highlight correct
+      }
+      if (!q.answer.includes(i) && userAnswers[currentQuestionIndex].includes(i)) {
+        label.classList.add("wrong"); // Highlight wrong selections
+      }
     }
 
     container.appendChild(label);
@@ -58,19 +60,21 @@ function renderQuiz() {
 
     if (scoreForQuestion === 1) {
       feedback.textContent = "Correct!";
-      feedback.style.color = "#006400";  // darker green
+      feedback.style.color = "#006400"; // Dark green
     } else if (scoreForQuestion > 0) {
       feedback.textContent = "Not quite correct.";
       feedback.style.color = "orange";
     } else {
       feedback.textContent = "Wrong.";
-      feedback.style.color = "#8B0000";  // darker red
+      feedback.style.color = "#8B0000"; // Dark red
     }
+
     container.appendChild(feedback);
 
+    // ✅ FIXED: render explanation with line breaks
     const expl = document.createElement("p");
     expl.className = "explanation";
-    expl.textContent = q.explanation || "";
+    expl.innerHTML = (q.explanation || "").replace(/\n/g, "<br>");
     container.appendChild(expl);
   }
 
