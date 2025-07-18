@@ -16,7 +16,7 @@ function updateReviewButtons() {
   });
 
   const btnWrong = document.getElementById("btn-wrong");
-  btnWrong.textContent = `Wrong (${wrongCount})`;
+  btnWrong.textContent = `Wrong Question(${wrongCount})`;
   btnWrong.dataset.wrongIndices = JSON.stringify(wrongIndices);
   btnWrong.disabled = wrongCount === 0;
 }
@@ -81,7 +81,9 @@ function showWrongDetails() {
     });
   });
 
-  wrongContainer.scrollIntoView({ behavior: "smooth" });
+  wrongContainer.scrollIntoView({
+    behavior: "smooth"
+  });
 }
 
 window.addEventListener("DOMContentLoaded", () => {

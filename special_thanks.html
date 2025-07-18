@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON Quiz App</title>
+
+    <!-- Relative stylesheet paths (auto-fixed below) -->
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/dark_mode.css" />
+    <link rel="stylesheet" href="css/toggle_menu.css" />
+    <link rel="stylesheet" href="css/footer.css" />
+    <link rel="stylesheet" href="css/special_thanks.css" />
+    <link rel="stylesheet" href="css/nav.css" />
+
+    <script>
+        // Automatically correct relative asset paths
+        const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').forEach(el => {
+                const attr = el.tagName === 'LINK' ? 'href' : 'src';
+                const val = el.getAttribute(attr);
+                if (val && (val.startsWith('css/') || val.startsWith('js/') || val.startsWith(
+                        'images/'))) {
+                    el.setAttribute(attr, `${basePath}/${val}`);
+                }
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="sidebar" class="sidebar">
+        <button id="sidebar-toggle">☰</button>
+        <div class="sidebar-content">
+            <a href="index.html">Home</a>
+
+            <div class="nav-section">
+                <button class="expand-btn">Oracle ▸</button>
+                <div class="submenu">
+                    <button class="expand-btn">SQL ▸</button>
+                    <div class="submenu">
+                        <a href="908.html" onclick="loadQuiz('data/1Z0_908.json', '1Z0_908')">908</a>
+                        <a href="quiz2.html">Quiz 2</a>
+                    </div>
+                </div>
+            </div>
+
+            <label class="switch">
+                <input type="checkbox" id="theme-toggle" />
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <main>
+        <h1>Special Thanks to the following:</h1>
+
+        <section id="special-thanks">
+            <h2>Special Thanks</h2>
+            <p>We sincerely thank these amazing contributors for their questions and answers:</p>
+
+            <ul class="contributors-list">
+                <li>
+                    <strong>Jane Doe</strong> — Provided 50+ Oracle questions
+                </li>
+                <li>
+                    <strong>John Smith</strong> — Helped with SQL quiz answers
+                </li>
+                <li>
+                    <strong>Mary Lee</strong> — Reviewed and corrected quiz explanations
+                </li>
+                <!-- Add more contributors here -->
+            </ul>
+        </section>
+
+    </main>
+    <!-- Footer Container (empty placeholder) -->
+    <div id="footer-container"></div>
+
+    <!-- Script loads footer after page loads -->
+    <script>
+        fetch('constant/footer.html')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('footer-container').innerHTML = html;
+            });
+    </script>
+
+    <!-- JS files (auto-fixed by script) -->
+    <script src="js/main.js"></script>
+    <script src="js/nav.js"></script>
+    <script>
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+    </script>
+</body>
+
+</html>
