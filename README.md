@@ -46,6 +46,7 @@ Example JSON:
     "explanation": "2, 3 and 5 are prime numbers."
   }
 ]
+```
 ---
 ## Formatting Questions with Code or Terminal Output
 
