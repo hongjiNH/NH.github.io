@@ -8,7 +8,7 @@ This app allows you to create interactive quizzes simply by providing a JSON fil
 
 ## How It Works
 
-- You provide a JSON file formatted with your quiz data.
+- You provide me a JSON file formatted with your quiz data.
 - The app reads your JSON and dynamically generates a quiz for users to take.
 - Easy, fast, and flexible!
 
