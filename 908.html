@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>908</title>
 
   <!-- Stylesheets with temporary placeholder, fixed via script -->
-  <link rel="stylesheet" href="css/styles.css" />
+  <!-- <link rel="stylesheet" href="css/styles.css" /> -->
+   <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/dark_mode.css" />
+     <link rel="stylesheet" href="css/quiz_controls.css" />
+      <link rel="stylesheet" href="css/toggle_menu.css" />
   <link rel="stylesheet" href="css/nav.css" />
 
   <script>
@@ -62,12 +67,25 @@
       <button onclick="resetQuiz()">Reset</button>
       <button id="submit-btn" onclick="submitCurrentAnswer()">Submit</button>
     </div>
+
     <hr id="quiz-divider" style="display: none;">
+
+    <!-- Explanation controls ABOVE wrong answers -->
+    <div id="explanation-controls" style="display: none; gap: 10px; margin-bottom: 10px;">
+      <button id="expand-all">Expand All Explanations</button>
+      <button id="collapse-all">Collapse All Explanations</button>
+    </div>
+
+    <!-- Single wrong answers container -->
     <div id="wrong-answers" style="margin-top: 40px;"></div>
   </main>
 
   <!-- Scripts with auto-fix via JS -->
-  <script src="js/main.js"></script>
+  <script src="js/quiz/quiz_data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/quiz/quiz_render.js"></script>
+  <script src="js/quiz/quiz_events.js"></script>
+  <script src="js/quiz/wrong_answers.js"></script>
   <script src="js/nav.js"></script>
   <script>
     window.onload = () => {
@@ -77,6 +95,19 @@
     document.getElementById('theme-toggle').addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
     });
+
+    document.getElementById("expand-all").addEventListener("click", () => {
+      document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "block");
+      document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
+        "Hide Explanation");
+    });
+
+    document.getElementById("collapse-all").addEventListener("click", () => {
+      document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "none");
+      document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
+        "Show Explanation");
+    });
   </script>
 </body>
+
 </html>
