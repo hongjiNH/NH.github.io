@@ -13,57 +13,65 @@
   <link rel="stylesheet" href="css/toggle_menu.css" />
   <link rel="stylesheet" href="css/footer.css" />
   <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="css/right_panel.css" />
+  <link rel="stylesheet" href="css/uparrow.css" />
 
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // Calculate base path to fix relative URLs
-    const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // Calculate base path to fix relative URLs
+      const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
 
-    // Fix relative asset paths (CSS, JS, IMG)
-    document.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').forEach(el => {
-      const attr = el.tagName === 'LINK' ? 'href' : 'src';
-      const val = el.getAttribute(attr);
-      if (val && (val.startsWith('css/') || val.startsWith('js/') || val.startsWith('images/'))) {
-        el.setAttribute(attr, `${basePath}/${val}`);
-      }
+      // Fix relative asset paths (CSS, JS, IMG)
+      document.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').forEach(el => {
+        const attr = el.tagName === 'LINK' ? 'href' : 'src';
+        const val = el.getAttribute(attr);
+        if (val && (val.startsWith('css/') || val.startsWith('js/') || val.startsWith('images/'))) {
+          el.setAttribute(attr, `${basePath}/${val}`);
+        }
+      });
+
+      // Load footer HTML dynamically with basePath
+      fetch(`${basePath}/constant/footer.html`)
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('footer-container').innerHTML = html;
+        })
+        .catch(err => {
+          console.error('Failed to load footer:', err);
+        });
+
+      // Load sidebar/nav HTML dynamically with basePath
+      fetch(`${basePath}/constant/nav.html`)
+        .then(res => res.text())
+        .then(html => {
+          const container = document.getElementById('sidebar-container');
+          container.innerHTML = html;
+
+          // Load nav.js script
+          const script = document.createElement('script');
+          script.src = `${basePath}/js/nav.js`;
+          document.body.appendChild(script);
+
+        })
+        .catch(err => {
+          console.error('Failed to load nav:', err);
+        });
+      // Load right panel
+      fetch(`${basePath}/constant/default_right_panel.html`)
+        .then(response => response.text())
+        .then(data => {
+          document.getElementById('right-panel-container').innerHTML = data;
+
+          // Setup theme toggle after right panel is loaded
+          const themeToggle = document.getElementById('theme-toggle');
+          if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+              document.body.classList.toggle('dark-mode');
+            });
+          }
+        });
     });
-
-    // Load footer HTML dynamically with basePath
-    fetch(`${basePath}/constant/footer.html`)
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById('footer-container').innerHTML = html;
-      })
-      .catch(err => {
-        console.error('Failed to load footer:', err);
-      });
-
-    // Load sidebar/nav HTML dynamically with basePath
-    fetch(`${basePath}/constant/nav.html`)
-  .then(res => res.text())
-  .then(html => {
-    const container = document.getElementById('sidebar-container');
-    container.innerHTML = html;
-
-    // Load nav.js script
-    const script = document.createElement('script');
-    script.src = `${basePath}/js/nav.js`;
-    document.body.appendChild(script);
-
-    // Now set theme toggle listener AFTER nav is loaded
-    const themeToggle = document.getElementById('theme-toggle');
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-      });
-    }
-  })
-  .catch(err => {
-    console.error('Failed to load nav:', err);
-  });
-
-  });
-</script>
+  </script>
 
 </head>
 
@@ -71,7 +79,10 @@
   <div id="sidebar-container"></div>
 
   <main>
+    <div id="right-panel-container"></div>
     <h1 id="quiz-title">Welcome to the Quiz</h1>
+    <button id="scrollTopBtn" title="Go to top">⬆️</button>
+
   </main>
 
   <!-- Footer placeholder -->
@@ -79,6 +90,7 @@
 
   <!-- JS files -->
   <script src="js/toggleBlackWhiteButton.js"></script>
+  <script src="js/uparrow.js"></script>
 </body>
 
 </html>

@@ -13,13 +13,15 @@
   <link rel="stylesheet" href="css/toggle_menu.css" />
   <link rel="stylesheet" href="css/footer.css" />
   <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="css/right_panel.css" />
+  <link rel="stylesheet" href="css/uparrow.css" />
 
-  <script>
-    // Auto-adjust relative paths for CSS/JS/IMG based on current path depth
+  <script type="module">
     window.addEventListener('DOMContentLoaded', () => {
+      // Get base path to fix relative paths
       const basePath = window.location.pathname.split('/').slice(0, -1).join('/');
 
-      // Fix relative links for CSS, JS, and IMG
+      // Fix relative paths for CSS, JS, IMG
       document.querySelectorAll('link[rel="stylesheet"], script[src], img[src]').forEach(el => {
         const attr = el.tagName === 'LINK' ? 'href' : 'src';
         const val = el.getAttribute(attr);
@@ -28,17 +30,7 @@
         }
       });
 
-      // Load footer HTML into footer container
-      fetch(`${basePath}/constant/footer.html`)
-        .then(res => res.text())
-        .then(html => {
-          document.getElementById('footer-container').innerHTML = html;
-        });
-
-      // Initialize quiz
-      loadQuiz('data/1Z0_908.json', '1Z0_908');
-
-      // Load footer HTML dynamically with basePath
+      // Load footer once
       fetch(`${basePath}/constant/footer.html`)
         .then(res => res.text())
         .then(html => {
@@ -48,56 +40,65 @@
           console.error('Failed to load footer:', err);
         });
 
-      // Load sidebar/nav HTML dynamically with basePath
+      // Load quiz JSON and initialize quiz
+      loadQuiz('data/1Z0_908.json', '1Z0_908');
+
+      // Load navigation sidebar
       fetch(`${basePath}/constant/nav.html`)
         .then(res => res.text())
         .then(html => {
-          const container = document.getElementById('sidebar-container');
-          container.innerHTML = html;
+          document.getElementById('sidebar-container').innerHTML = html;
 
-          // Load nav.js script
+          // Load nav.js after sidebar HTML inserted
           const script = document.createElement('script');
           script.src = `${basePath}/js/nav.js`;
           document.body.appendChild(script);
+        })
+        .catch(err => {
+          console.error('Failed to load nav:', err);
+        });
 
-          // Now set theme toggle listener AFTER nav is loaded
+      // Load right panel and setup buttons event listeners
+      // After loading right panel and injecting HTML
+      fetch(`${basePath}/constant/quiz_right_panel.html`)
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('right-panel-container').innerHTML = html;
+
+          // Theme toggle listener as before
           const themeToggle = document.getElementById('theme-toggle');
           if (themeToggle) {
             themeToggle.addEventListener('click', () => {
               document.body.classList.toggle('dark-mode');
             });
           }
+
+          // Import the new module and setup buttons
+          import(`${basePath}/js/quiz/right_panel_controls.js`)
+            .then(module => {
+              module.setupRightPanelButtons();
+            })
+            .catch(err => {
+              console.error('Failed to load right panel controls JS:', err);
+            });
         })
         .catch(err => {
-          console.error('Failed to load nav:', err);
+          console.error('Failed to load right panel:', err);
         });
-
-
-      // Expand all explanations
-      document.getElementById("expand-all").addEventListener("click", () => {
-        document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "block");
-        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
-          "Hide Explanation");
-      });
-
-      // Collapse all explanations
-      document.getElementById("collapse-all").addEventListener("click", () => {
-        document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "none");
-        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
-          "Show Explanation");
-      });
+        
     });
   </script>
 </head>
 
 <body>
   <div id="sidebar-container"></div>
-
   <main>
     <div id="score" style="margin-top: 10px;">Score: 0 / 0</div>
     <div id="review-buttons" style="display: flex; gap: 10px;">
       <button id="btn-wrong">Wrong (0)</button>
     </div>
+
+    <div id="right-panel-container"></div>
 
     <h1 id="quiz-title">Loading Quiz 1...</h1>
     <div id="quiz-container"></div>
@@ -108,22 +109,15 @@
       <button id="submit-btn" onclick="submitCurrentAnswer()">Submit</button>
     </div>
 
-    <hr id="quiz-divider" style="display: none;" />
+    <hr id="quiz-divider" />
 
-    <!-- Explanation controls ABOVE wrong answers -->
-    <div id="explanation-controls" style="display: none; gap: 10px; margin-bottom: 10px;">
-      <button id="expand-all">Expand All Explanations</button>
-      <button id="collapse-all">Collapse All Explanations</button>
-    </div>
-
-    <!-- Single wrong answers container -->
-    <div id="wrong-answers" style="margin-top: 40px;"></div>
+    <!-- Container to show wrong questions and explanations -->
+    <div id="wrong-answers" style="margin-top: 40px; display: none;"></div>
+    <button id="scrollTopBtn" title="Go to top">⬆️</button>
   </main>
 
-  <!-- Footer Container -->
   <div id="footer-container"></div>
 
-  <!-- Scripts -->
   <script src="js/quiz/quiz_data.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/quiz/quiz_render.js"></script>
@@ -131,7 +125,7 @@
   <script src="js/quiz/wrong_answers.js"></script>
   <script src="js/nav.js"></script>
   <script src="js/toggleBlackWhiteButton.js"></script>
-
+  <script src="js/uparrow.js"></script>
 </body>
 
 </html>
