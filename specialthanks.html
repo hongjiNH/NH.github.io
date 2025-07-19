@@ -26,33 +26,35 @@
                     el.setAttribute(attr, `${basePath}/${val}`);
                 }
             });
+            // Load sidebar/nav HTML dynamically with basePath
+            fetch(`${basePath}/constant/nav.html`)
+                .then(res => res.text())
+                .then(html => {
+                    const container = document.getElementById('sidebar-container');
+                    container.innerHTML = html;
+
+                    // Load nav.js script
+                    const script = document.createElement('script');
+                    script.src = `${basePath}/js/nav.js`;
+                    document.body.appendChild(script);
+
+                    // Now set theme toggle listener AFTER nav is loaded
+                    const themeToggle = document.getElementById('theme-toggle');
+                    if (themeToggle) {
+                        themeToggle.addEventListener('click', () => {
+                            document.body.classList.toggle('dark-mode');
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('Failed to load nav:', err);
+                });
         });
     </script>
 </head>
 
 <body>
-    <div id="sidebar" class="sidebar">
-        <button id="sidebar-toggle">☰</button>
-        <div class="sidebar-content">
-            <a href="index.html">Home</a>
-
-            <div class="nav-section">
-                <button class="expand-btn">Oracle ▸</button>
-                <div class="submenu">
-                    <button class="expand-btn">SQL ▸</button>
-                    <div class="submenu">
-                        <a href="908.html" onclick="loadQuiz('data/1Z0_908.json', '1Z0_908')">908</a>
-                        <a href="quiz2.html">Quiz 2</a>
-                    </div>
-                </div>
-            </div>
-
-            <label class="switch">
-                <input type="checkbox" id="theme-toggle" />
-                <span class="slider"></span>
-            </label>
-        </div>
-    </div>
+    <div id="sidebar-container"></div>
 
     <main>
         <h1>Special Thanks to the following:</h1>
@@ -63,7 +65,9 @@
 
             <ul class="contributors-list">
                 <li>
-                    <strong><a href="https://www.xiaohongshu.com/user/profile/5d15c8ad0000000010012dc6?xsec_token=YBK3YG5j6UH-XVHMHD9x_KIMOmZIJ3WfQhvVzG1fwS6-Q%3D&xsec_source=app_share&xhsshare=&appuid=668c753b000000000f035949&apptime=1752810404&share_id=537cf25a53434a7c8e8e0a6897c8e10c&share_channel=copy_link" target="_blank">小红书sekko博士</a></strong> — Provided  Oracle questions
+                    <strong><a
+                            href="https://www.xiaohongshu.com/user/profile/5d15c8ad0000000010012dc6?xsec_token=YBK3YG5j6UH-XVHMHD9x_KIMOmZIJ3WfQhvVzG1fwS6-Q%3D&xsec_source=app_share&xhsshare=&appuid=668c753b000000000f035949&apptime=1752810404&share_id=537cf25a53434a7c8e8e0a6897c8e10c&share_channel=copy_link"
+                            target="_blank">小红书sekko博士</a></strong> — Provided Oracle questions
                 </li>
                 <li>
                     <strong>John Smith</strong> — Helped with SQL quiz answers
@@ -89,13 +93,8 @@
     </script>
 
     <!-- JS files (auto-fixed by script) -->
-    <script src="js/main.js"></script>
+    <script src="js/toggleBlackWhiteButton.js"></script>
     <script src="js/nav.js"></script>
-    <script>
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-        });
-    </script>
 </body>
 
 </html>

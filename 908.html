@@ -38,49 +38,60 @@
       // Initialize quiz
       loadQuiz('data/1Z0_908.json', '1Z0_908');
 
-      // Theme toggle listener
-      document.getElementById('theme-toggle').addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-      });
+      // Load footer HTML dynamically with basePath
+      fetch(`${basePath}/constant/footer.html`)
+        .then(res => res.text())
+        .then(html => {
+          document.getElementById('footer-container').innerHTML = html;
+        })
+        .catch(err => {
+          console.error('Failed to load footer:', err);
+        });
+
+      // Load sidebar/nav HTML dynamically with basePath
+      fetch(`${basePath}/constant/nav.html`)
+        .then(res => res.text())
+        .then(html => {
+          const container = document.getElementById('sidebar-container');
+          container.innerHTML = html;
+
+          // Load nav.js script
+          const script = document.createElement('script');
+          script.src = `${basePath}/js/nav.js`;
+          document.body.appendChild(script);
+
+          // Now set theme toggle listener AFTER nav is loaded
+          const themeToggle = document.getElementById('theme-toggle');
+          if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+              document.body.classList.toggle('dark-mode');
+            });
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load nav:', err);
+        });
+
 
       // Expand all explanations
       document.getElementById("expand-all").addEventListener("click", () => {
         document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "block");
-        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent = "Hide Explanation");
+        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
+          "Hide Explanation");
       });
 
       // Collapse all explanations
       document.getElementById("collapse-all").addEventListener("click", () => {
         document.querySelectorAll("#wrong-answers .explanation").forEach(div => div.style.display = "none");
-        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent = "Show Explanation");
+        document.querySelectorAll("#wrong-answers .toggle-explanation").forEach(btn => btn.textContent =
+          "Show Explanation");
       });
     });
   </script>
 </head>
 
 <body>
-  <div id="sidebar" class="sidebar">
-    <button id="sidebar-toggle">☰</button>
-    <div class="sidebar-content">
-      <a href="index.html">Home</a>
-
-      <div class="nav-section">
-        <button class="expand-btn">Oracle ▸</button>
-        <div class="submenu">
-          <button class="expand-btn">SQL ▸</button>
-          <div class="submenu">
-            <a href="908.html" onclick="loadQuiz('data/1Z0_908.json', '1Z0_908')">908</a>
-            <a href="quiz2.html">Quiz 2</a>
-          </div>
-        </div>
-      </div>
-
-      <label class="switch">
-        <input type="checkbox" id="theme-toggle" />
-        <span class="slider"></span>
-      </label>
-    </div>
-  </div>
+  <div id="sidebar-container"></div>
 
   <main>
     <div id="score" style="margin-top: 10px;">Score: 0 / 0</div>
@@ -119,6 +130,8 @@
   <script src="js/quiz/quiz_events.js"></script>
   <script src="js/quiz/wrong_answers.js"></script>
   <script src="js/nav.js"></script>
+  <script src="js/toggleBlackWhiteButton.js"></script>
+
 </body>
 
 </html>

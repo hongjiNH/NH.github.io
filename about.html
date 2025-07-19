@@ -26,63 +26,65 @@
                     el.setAttribute(attr, `${basePath}/${val}`);
                 }
             });
+            // Load sidebar/nav HTML dynamically with basePath
+            fetch(`${basePath}/constant/nav.html`)
+                .then(res => res.text())
+                .then(html => {
+                    const container = document.getElementById('sidebar-container');
+                    container.innerHTML = html;
+
+                    // Load nav.js script
+                    const script = document.createElement('script');
+                    script.src = `${basePath}/js/nav.js`;
+                    document.body.appendChild(script);
+
+                    // Now set theme toggle listener AFTER nav is loaded
+                    const themeToggle = document.getElementById('theme-toggle');
+                    if (themeToggle) {
+                        themeToggle.addEventListener('click', () => {
+                            document.body.classList.toggle('dark-mode');
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('Failed to load nav:', err);
+                });
         });
     </script>
 </head>
 
 <body>
-    <div id="sidebar" class="sidebar">
-        <button id="sidebar-toggle">☰</button>
-        <div class="sidebar-content">
-            <a href="index.html">Home</a>
+    <div id="sidebar-container"></div>
 
-            <div class="nav-section">
-                <button class="expand-btn">Oracle ▸</button>
-                <div class="submenu">
-                    <button class="expand-btn">SQL ▸</button>
-                    <div class="submenu">
-                        <a href="908.html" onclick="loadQuiz('data/1Z0_908.json', '1Z0_908')">908</a>
-                        <a href="quiz2.html">Quiz 2</a>
-                    </div>
-                </div>
-            </div>
+    <main>
+        <h1>About This Quiz Creator</h1>
 
-            <label class="switch">
-                <input type="checkbox" id="theme-toggle" />
-                <span class="slider"></span>
-            </label>
-        </div>
-    </div>
+        <p>Welcome to our Free Quiz Creator platform!</p>
 
-     <main>
-    <h1>About This Quiz Creator</h1>
+        <p>
+            This tool allows you to create quizzes easily by adding your own questions and answers in JSON format.
+            Once the questions are added, the app automatically generates an interactive quiz for users to take.
+        </p>
 
-    <p>Welcome to our Free Quiz Creator platform!</p>
+        <p>
+            It’s perfect for learners, educators, or anyone who wants to test knowledge on a variety of topics.
+            You can customize your quizzes, review scores, and track wrong answers to improve learning.
+        </p>
 
-    <p>
-      This tool allows you to create quizzes easily by adding your own questions and answers in JSON format.
-      Once the questions are added, the app automatically generates an interactive quiz for users to take.
-    </p>
+        <p>
+            This project is fully free to use, and we’re constantly improving it to add more features and make
+            quiz creation easier and more enjoyable.
+        </p>
 
-    <p>
-      It’s perfect for learners, educators, or anyone who wants to test knowledge on a variety of topics.
-      You can customize your quizzes, review scores, and track wrong answers to improve learning.
-    </p>
+        <p>
+            Feel free to browse the quizzes, try them out, and if you want, contribute your own questions to help
+            build a growing collection of quizzes for everyone.
+        </p>
 
-    <p>
-      This project is fully free to use, and we’re constantly improving it to add more features and make
-      quiz creation easier and more enjoyable.
-    </p>
-
-    <p>
-      Feel free to browse the quizzes, try them out, and if you want, contribute your own questions to help
-      build a growing collection of quizzes for everyone.
-    </p>
-
-    <p>
-      If you have any questions or suggestions, please <a href="contact.html">contact us</a>.
-    </p>
-  </main>
+        <p>
+            If you have any questions or suggestions, please <a href="contact.html">contact us</a>.
+        </p>
+    </main>
     <!-- Footer Container (empty placeholder) -->
     <div id="footer-container"></div>
 
@@ -96,7 +98,7 @@
     </script>
 
     <!-- JS files (auto-fixed by script) -->
-    <script src="js/main.js"></script>
+    <script src="js/toggleBlackWhiteButton.js"></script>
     <script src="js/nav.js"></script>
     <script>
         document.getElementById('theme-toggle').addEventListener('click', () => {
